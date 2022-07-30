@@ -8,12 +8,12 @@ df=pandas.DataFrame(columns=["Start", "End"])
 
 video = cv2.VideoCapture(0)
 
-while True:    
+while True:
     check, frame = video.read()
     status = 0
     gray= cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray,(21,21),0)
-    
+
     if first_frame is None:
         first_frame = gray
         continue
@@ -27,12 +27,14 @@ while True:
 
     for c in cnts:
         if cv2.contourArea(c) < 10000:
-            continue 
+            continue
         status = 1
-        
+
         (x, y, w, h)=cv2.boundingRect(c)
         cv2.rectangle(frame, (x,y), (x+w, y+h), (0,255,0), 3)
     status_list.append(status)
+
+    status_list = status_list[-2:]
 
     if status_list[-1] == 0 and status_list[-2] == 1:
         times.append(datetime.now())
@@ -49,7 +51,7 @@ while True:
     #print (gray)
 
     if key == ord('q'):
-        times.append(datetime.now())         
+        times.append(datetime.now())
         break
 
 print(status_list)
